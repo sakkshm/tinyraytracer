@@ -1,3 +1,3 @@
 # tinyraytracer
 
-A Tiny Ray tracer built using C++
+A Tiny ray tracer built using C++
