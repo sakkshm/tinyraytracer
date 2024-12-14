@@ -4,12 +4,34 @@
 #include "./headers/color.h"
 #include "./headers/ray.h"
 
+
+
+bool hit_sphere(const point3& center, double radius, const ray& r){
+    //a, b , c are coeff of ray-sphere intersection equation
+    //r.origin() is camera center
+    vec3 oc = center - r.origin();
+    auto a = dot(r.direction(), r.direction());
+    auto b = -2 * dot(r.direction(), oc); 
+    auto c = dot(oc, oc) - radius * radius; 
+
+    auto disc = b*b - 4*a*c;
+
+    return (disc >= 0);
+
+}
+
+
 color ray_color(const ray& r){
-    //Blue white gradient
+    
+    if(hit_sphere(point3(0, 0, 1), 0.5, r)){
+        return color(1,0,0);
+    }
+
+    //Blue white gradient background
     vec3 unit_dirn = unit_vector(r.direction());
 
     auto a = 0.5*(unit_dirn.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0, 0, 1.0);
 
 }
 
