@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "vec3.h"
+#include "rtweekend.h"
 
 using color = vec3;
 

@@ -3,28 +3,35 @@
 #include "./headers/vec3.h"
 #include "./headers/color.h"
 #include "./headers/ray.h"
+#include "./headers/hittable.h"
+#include "./headers/hittable_list.h"
+#include "./headers/sphere.h"
+#include "./headers/rtweekend.h"
 
 
 
-bool hit_sphere(const point3& center, double radius, const ray& r){
+double hit_sphere(const point3& center, double radius, const ray& r){
     //a, b , c are coeff of ray-sphere intersection equation
     //r.origin() is camera center
     vec3 oc = center - r.origin();
-    auto a = dot(r.direction(), r.direction());
-    auto b = -2 * dot(r.direction(), oc); 
-    auto c = dot(oc, oc) - radius * radius; 
+     auto a = r.direction().length_squared();
+    auto h = dot(r.direction(), oc);
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = h*h - a*c;
 
-    auto disc = b*b - 4*a*c;
-
-    return (disc >= 0);
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return (h - std::sqrt(discriminant)) / a;
+    }
 
 }
 
 
-color ray_color(const ray& r){
-    
-    if(hit_sphere(point3(0, 0, 1), 0.5, r)){
-        return color(1,0,0);
+color ray_color(const ray& r, const hittable& world) {
+    hit_record rec;
+    if (world.hit(r, interval(0, infinity), rec)) {
+        return 0.5 * (rec.normal + color(1,1,1));
     }
 
     //Blue white gradient background
@@ -44,6 +51,13 @@ int main(){
     //Img height must be atleast 1
     int img_h = int(img_w / aspect_ratio);
     img_h = (img_h < 1) ? 1 : img_h;
+
+    // World
+
+    hittable_list world;
+
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     //Camera
     double focal_l = 1.0;
@@ -80,7 +94,7 @@ int main(){
 
             ray r(camera_center, ray_direction);
 
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r, world);
 
             write_color(std::cout, pixel_color);
         }
