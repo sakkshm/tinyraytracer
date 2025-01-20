@@ -3,6 +3,7 @@
 
 #include "hittable.h"
 #include "color.h"
+#include "material.h"
 
 class camera {
     private:
@@ -48,11 +49,14 @@ class camera {
                 //Uniform diffusion
                 //vec3 direction = random_on_hemisphere(rec.normal);
                 
-                //Lambertian diffusion 
-                vec3 direction = rec.normal + random_unit_vector();
+                ray scattered;
+                color attenuation;
+
+                if(rec.mat -> scatter(r, rec, attenuation, scattered)){
+                    return attenuation * ray_color(scattered, depth - 1, world);
+                }
                 
-                //Multiplication coeff is the percentage of relection -> denotes brightness
-                return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
+                return color(0,0,0);
             }
 
 
