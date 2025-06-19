@@ -1,6 +1,8 @@
 
 # TinyRayTracer
 
+![Final Render](./out/final-render.jpg "a title")
+
 A minimal ray tracer in modern C++17 built from scratch using [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) by Peter Shirley.
 
 This project was built from scratch without any graphics libraries to learn the core ideas behind ray tracing — like vector math, ray intersections, light scattering, and camera models. It renders .ppm images and offers a hands-on understanding of how renderers work under the hood.
